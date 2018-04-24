@@ -394,9 +394,8 @@
                         </Constraint>
                       </Constraints>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="jTextField9">
+                    <Component class="javax.swing.JTextField" name="txt_Printers_device_id">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="jTextField1"/>
                         <Property name="alignmentX" type="float" value="0.1"/>
                         <Property name="alignmentY" type="float" value="0.1"/>
                       </Properties>
@@ -406,21 +405,22 @@
                         </Constraint>
                       </Constraints>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="jTextField10">
+                    <Component class="javax.swing.JTextField" name="txt_Printers_device_name">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="jTextField1"/>
                         <Property name="alignmentX" type="float" value="0.1"/>
                         <Property name="alignmentY" type="float" value="0.1"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txt_Printers_device_nameActionPerformed"/>
+                      </Events>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
                           <GridBagConstraints gridX="2" gridY="7" gridWidth="3" gridHeight="1" fill="0" ipadX="302" ipadY="0" insetsTop="6" insetsLeft="4" insetsBottom="0" insetsRight="0" anchor="18" weightX="0.0" weightY="0.0"/>
                         </Constraint>
                       </Constraints>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="jTextField11">
+                    <Component class="javax.swing.JTextField" name="txt_Printers_dealer">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="jTextField1"/>
                         <Property name="alignmentX" type="float" value="0.1"/>
                         <Property name="alignmentY" type="float" value="0.1"/>
                       </Properties>
@@ -430,9 +430,8 @@
                         </Constraint>
                       </Constraints>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="jTextField12">
+                    <Component class="javax.swing.JTextField" name="txt_Printers_location">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="jTextField1"/>
                         <Property name="alignmentX" type="float" value="0.1"/>
                         <Property name="alignmentY" type="float" value="0.1"/>
                       </Properties>
@@ -442,14 +441,13 @@
                         </Constraint>
                       </Constraints>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="jTextField14">
+                    <Component class="javax.swing.JTextField" name="txt_Printers_condition">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="jTextField1"/>
                         <Property name="alignmentX" type="float" value="0.1"/>
                         <Property name="alignmentY" type="float" value="0.1"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField14ActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txt_Printers_conditionActionPerformed"/>
                       </Events>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -457,9 +455,8 @@
                         </Constraint>
                       </Constraints>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="jTextField15">
+                    <Component class="javax.swing.JTextField" name="txt_Printers_drum_cartridge">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="jTextField1"/>
                         <Property name="alignmentX" type="float" value="0.1"/>
                         <Property name="alignmentY" type="float" value="0.1"/>
                       </Properties>
@@ -469,9 +466,8 @@
                         </Constraint>
                       </Constraints>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="jTextField16">
+                    <Component class="javax.swing.JTextField" name="txt_Printers_roller">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="jTextField1"/>
                         <Property name="alignmentX" type="float" value="0.1"/>
                         <Property name="alignmentY" type="float" value="0.1"/>
                       </Properties>
@@ -481,9 +477,8 @@
                         </Constraint>
                       </Constraints>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="jTextField17">
+                    <Component class="javax.swing.JTextField" name="txt_Printers_toner_cartridge">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="jTextField1"/>
                         <Property name="alignmentX" type="float" value="0.1"/>
                         <Property name="alignmentY" type="float" value="0.1"/>
                       </Properties>
@@ -493,9 +488,8 @@
                         </Constraint>
                       </Constraints>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="jTextField18">
+                    <Component class="javax.swing.JTextField" name="txt_Printers_notice">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="jTextField1"/>
                         <Property name="alignmentX" type="float" value="0.1"/>
                         <Property name="alignmentY" type="float" value="0.1"/>
                       </Properties>
@@ -505,9 +499,8 @@
                         </Constraint>
                       </Constraints>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="jTextField19">
+                    <Component class="javax.swing.JTextField" name="txt_Printers_waste_toner">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="jTextField1"/>
                         <Property name="alignmentX" type="float" value="0.1"/>
                         <Property name="alignmentY" type="float" value="0.1"/>
                       </Properties>
@@ -517,7 +510,7 @@
                         </Constraint>
                       </Constraints>
                     </Component>
-                    <Component class="com.toedter.calendar.JDateChooser" name="jDateChooser1">
+                    <Component class="com.toedter.calendar.JDateChooser" name="txt_Printers_date">
                       <Properties>
                         <Property name="alignmentX" type="float" value="0.1"/>
                         <Property name="alignmentY" type="float" value="0.1"/>
@@ -528,7 +521,7 @@
                         </Constraint>
                       </Constraints>
                     </Component>
-                    <Component class="javax.swing.JButton" name="jButton1">
+                    <Component class="javax.swing.JButton" name="btn_Printers_insert">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/pict/icons/check.png"/>
@@ -537,7 +530,7 @@
                         <Property name="alignmentY" type="float" value="0.1"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_Printers_insertActionPerformed"/>
                       </Events>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -545,7 +538,7 @@
                         </Constraint>
                       </Constraints>
                     </Component>
-                    <Component class="javax.swing.JButton" name="jButton2">
+                    <Component class="javax.swing.JButton" name="btn_Printers_refresh">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/pict/icons/refresh_22.png"/>
@@ -558,7 +551,7 @@
                         </Property>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_Printers_refreshActionPerformed"/>
                       </Events>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -566,7 +559,7 @@
                         </Constraint>
                       </Constraints>
                     </Component>
-                    <Component class="javax.swing.JButton" name="jButton3">
+                    <Component class="javax.swing.JButton" name="btn_Printers_delete">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/pict/icons/delete_18.png"/>
@@ -575,7 +568,7 @@
                         <Property name="alignmentY" type="float" value="0.1"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton3ActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_Printers_deleteActionPerformed"/>
                       </Events>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -583,7 +576,7 @@
                         </Constraint>
                       </Constraints>
                     </Component>
-                    <Component class="javax.swing.JButton" name="jButton4">
+                    <Component class="javax.swing.JButton" name="btn_Printers_next">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/pict/icons/next_20.png"/>
@@ -597,7 +590,7 @@
                         </Constraint>
                       </Constraints>
                     </Component>
-                    <Component class="javax.swing.JButton" name="jButton5">
+                    <Component class="javax.swing.JButton" name="btn_Printers_first">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/pict/icons/first_20.png"/>
@@ -611,7 +604,7 @@
                         </Constraint>
                       </Constraints>
                     </Component>
-                    <Component class="javax.swing.JButton" name="jButton6">
+                    <Component class="javax.swing.JButton" name="btn_Printers_back">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/pict/icons/back_20.png"/>
@@ -625,7 +618,7 @@
                         </Constraint>
                       </Constraints>
                     </Component>
-                    <Component class="javax.swing.JButton" name="jButton7">
+                    <Component class="javax.swing.JButton" name="btn_Printers_last">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/pict/icons/last_20.png"/>

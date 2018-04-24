@@ -1,6 +1,15 @@
 package erpv2;
 
 import calendar.CalendarTest;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
 
 public class AppWindow extends javax.swing.JFrame {
 
@@ -9,6 +18,119 @@ public class AppWindow extends javax.swing.JFrame {
      */
     public AppWindow() {
         initComponents();
+        
+        Show_Products_In_JTable();
+    }
+    
+    /*
+    String ImgPath = null;
+    // переменная указывает начало списка в таблице
+    int pos = 0;
+    */
+    //соединение с базой MySQL
+    public Connection getConnection() {
+        Connection con = null;
+        try {
+            // 172.24.225.222/erpdb","erpuser", "linAdmin79!!!
+            con = DriverManager.getConnection("jdbc:mysql://172.24.225.222/erpdb","erpuser","linAdmin79!!!");
+            //con = DriverManager.getConnection("jdbc:mysql://192.168.0.171/erpdb","erpdbusr", "U><er!!!123");
+            /*Убрал всплывающее окно Connected
+            JOptionPane.showMessageDialog(null,"Connected");
+            */
+            return con;
+        } catch (SQLException ex) {
+            Logger.getLogger(AppWindow.class.getName()).log(Level.SEVERE, null, ex);
+            /*Убрал всплывающее окно Not Connected
+            JOptionPane.showMessageDialog(null,"Not Connected");
+            */
+            return null;
+        }
+    }
+    
+    // Check Input Fields
+    public boolean checkInputsPrinters() {
+        if(txt_Printers_device_name.getText() == null
+                || txt_Printers_dealer.getText() == null
+                || txt_Printers_location.getText() == null
+                || txt_Printers_date.getDate() == null
+                || txt_Printers_condition.getText() == null
+                || txt_Printers_toner_cartridge.getText() == null
+                || txt_Printers_drum_cartridge.getText() == null
+                || txt_Printers_roller.getText() == null
+                || txt_Printers_waste_toner.getText() == null
+                || txt_Printers_notice.getText() == null
+                ){
+            return false;
+        }
+        else{
+            try{
+                Float.parseFloat(txt_price.getText());
+                return true;
+            }catch(Exception ex)
+            {
+                return false;
+            }
+        }
+    }
+    
+    
+    // Отображение данных из базы в таблице MFP JTable App_mfprinters
+    // 1 - Fill ArrayList With The Data
+    
+    public ArrayList<App_mfprinters> getProductList()
+    {
+        ArrayList<App_mfprinters> productList = new ArrayList<App_mfprinters>();
+        Connection con = getConnection();
+        String query = "SELECT * FROM mfprinters";
+            
+        Statement st;
+        ResultSet rs;
+            
+        try {           
+            st = con.createStatement();
+            rs = st.executeQuery(query);
+            App_mfprinters product;
+            
+            while(rs.next())
+            {
+                product = new App_mfprinters(rs.getInt("id"),rs.getString("name"),Float.parseFloat(rs.getString("price")),rs.getString("add_date"),rs.getBytes("image"));
+                productList.add(product);
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(AppWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return productList;
+    }
+    
+    // 2 - Populate The JTable
+    
+    public void Show_Products_In_JTable_mfprinters()
+    {
+        ArrayList<App_mfprinters> list = getProductList();
+        DefaultTableModel model = (DefaultTableModel)jTable_mfprinters.getModel();
+        
+        // очистка содержимого таблицы
+        model.setRowCount(0);
+        Object[] row = new Object[11];
+        for(int i = 0; i < list.size(); i++)
+        {
+            row[0] = list.get(i).getPrintersDevice_id();
+            row[1] = list.get(i).getPrintersDevice_name();
+            row[2] = list.get(i).getPrintersDealer();
+            row[3] = list.get(i).getPrintersLocation();
+            row[4] = list.get(i).getPrintersDate();
+            row[5] = list.get(i).getPrintersCondition();
+            row[6] = list.get(i).getPrintersCartridge();
+            row[7] = list.get(i).getPrintersDrum();
+            row[8] = list.get(i).getPrintersRoller();
+            row[9] = list.get(i).getPrintersWasteToner();
+            row[10] = list.get(i).getPrintersNotice();           
+            
+            model.addRow(row);
+        }
+        
     }
 
     /**
@@ -42,24 +164,24 @@ public class AppWindow extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel29 = new javax.swing.JLabel();
-        jTextField9 = new javax.swing.JTextField();
-        jTextField10 = new javax.swing.JTextField();
-        jTextField11 = new javax.swing.JTextField();
-        jTextField12 = new javax.swing.JTextField();
-        jTextField14 = new javax.swing.JTextField();
-        jTextField15 = new javax.swing.JTextField();
-        jTextField16 = new javax.swing.JTextField();
-        jTextField17 = new javax.swing.JTextField();
-        jTextField18 = new javax.swing.JTextField();
-        jTextField19 = new javax.swing.JTextField();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
+        txt_Printers_device_id = new javax.swing.JTextField();
+        txt_Printers_device_name = new javax.swing.JTextField();
+        txt_Printers_dealer = new javax.swing.JTextField();
+        txt_Printers_location = new javax.swing.JTextField();
+        txt_Printers_condition = new javax.swing.JTextField();
+        txt_Printers_drum_cartridge = new javax.swing.JTextField();
+        txt_Printers_roller = new javax.swing.JTextField();
+        txt_Printers_toner_cartridge = new javax.swing.JTextField();
+        txt_Printers_notice = new javax.swing.JTextField();
+        txt_Printers_waste_toner = new javax.swing.JTextField();
+        txt_Printers_date = new com.toedter.calendar.JDateChooser();
+        btn_Printers_insert = new javax.swing.JButton();
+        btn_Printers_refresh = new javax.swing.JButton();
+        btn_Printers_delete = new javax.swing.JButton();
+        btn_Printers_next = new javax.swing.JButton();
+        btn_Printers_first = new javax.swing.JButton();
+        btn_Printers_back = new javax.swing.JButton();
+        btn_Printers_last = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable_mf_spare_parts = new javax.swing.JTable();
@@ -301,20 +423,23 @@ public class AppWindow extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(19, 10, 0, 0);
         jPanel4.add(jLabel29, gridBagConstraints);
 
-        jTextField9.setText("jTextField1");
-        jTextField9.setAlignmentX(0.1F);
-        jTextField9.setAlignmentY(0.1F);
+        txt_Printers_device_id.setAlignmentX(0.1F);
+        txt_Printers_device_id.setAlignmentY(0.1F);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 6;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.ipadx = 302;
         gridBagConstraints.insets = new java.awt.Insets(17, 3, 0, 0);
-        jPanel4.add(jTextField9, gridBagConstraints);
+        jPanel4.add(txt_Printers_device_id, gridBagConstraints);
 
-        jTextField10.setText("jTextField1");
-        jTextField10.setAlignmentX(0.1F);
-        jTextField10.setAlignmentY(0.1F);
+        txt_Printers_device_name.setAlignmentX(0.1F);
+        txt_Printers_device_name.setAlignmentY(0.1F);
+        txt_Printers_device_name.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_Printers_device_nameActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 7;
@@ -322,11 +447,10 @@ public class AppWindow extends javax.swing.JFrame {
         gridBagConstraints.ipadx = 302;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 4, 0, 0);
-        jPanel4.add(jTextField10, gridBagConstraints);
+        jPanel4.add(txt_Printers_device_name, gridBagConstraints);
 
-        jTextField11.setText("jTextField1");
-        jTextField11.setAlignmentX(0.1F);
-        jTextField11.setAlignmentY(0.1F);
+        txt_Printers_dealer.setAlignmentX(0.1F);
+        txt_Printers_dealer.setAlignmentY(0.1F);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 9;
@@ -334,11 +458,10 @@ public class AppWindow extends javax.swing.JFrame {
         gridBagConstraints.ipadx = 302;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 4, 0, 0);
-        jPanel4.add(jTextField11, gridBagConstraints);
+        jPanel4.add(txt_Printers_dealer, gridBagConstraints);
 
-        jTextField12.setText("jTextField1");
-        jTextField12.setAlignmentX(0.1F);
-        jTextField12.setAlignmentY(0.1F);
+        txt_Printers_location.setAlignmentX(0.1F);
+        txt_Printers_location.setAlignmentY(0.1F);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 11;
@@ -346,14 +469,13 @@ public class AppWindow extends javax.swing.JFrame {
         gridBagConstraints.ipadx = 302;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 4, 0, 0);
-        jPanel4.add(jTextField12, gridBagConstraints);
+        jPanel4.add(txt_Printers_location, gridBagConstraints);
 
-        jTextField14.setText("jTextField1");
-        jTextField14.setAlignmentX(0.1F);
-        jTextField14.setAlignmentY(0.1F);
-        jTextField14.addActionListener(new java.awt.event.ActionListener() {
+        txt_Printers_condition.setAlignmentX(0.1F);
+        txt_Printers_condition.setAlignmentY(0.1F);
+        txt_Printers_condition.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField14ActionPerformed(evt);
+                txt_Printers_conditionActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -363,11 +485,10 @@ public class AppWindow extends javax.swing.JFrame {
         gridBagConstraints.ipadx = 302;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.ABOVE_BASELINE_LEADING;
         gridBagConstraints.insets = new java.awt.Insets(6, 4, 0, 0);
-        jPanel4.add(jTextField14, gridBagConstraints);
+        jPanel4.add(txt_Printers_condition, gridBagConstraints);
 
-        jTextField15.setText("jTextField1");
-        jTextField15.setAlignmentX(0.1F);
-        jTextField15.setAlignmentY(0.1F);
+        txt_Printers_drum_cartridge.setAlignmentX(0.1F);
+        txt_Printers_drum_cartridge.setAlignmentY(0.1F);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 7;
         gridBagConstraints.gridy = 7;
@@ -375,11 +496,10 @@ public class AppWindow extends javax.swing.JFrame {
         gridBagConstraints.ipadx = 302;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        jPanel4.add(jTextField15, gridBagConstraints);
+        jPanel4.add(txt_Printers_drum_cartridge, gridBagConstraints);
 
-        jTextField16.setText("jTextField1");
-        jTextField16.setAlignmentX(0.1F);
-        jTextField16.setAlignmentY(0.1F);
+        txt_Printers_roller.setAlignmentX(0.1F);
+        txt_Printers_roller.setAlignmentY(0.1F);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 7;
         gridBagConstraints.gridy = 9;
@@ -387,22 +507,20 @@ public class AppWindow extends javax.swing.JFrame {
         gridBagConstraints.ipadx = 302;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        jPanel4.add(jTextField16, gridBagConstraints);
+        jPanel4.add(txt_Printers_roller, gridBagConstraints);
 
-        jTextField17.setText("jTextField1");
-        jTextField17.setAlignmentX(0.1F);
-        jTextField17.setAlignmentY(0.1F);
+        txt_Printers_toner_cartridge.setAlignmentX(0.1F);
+        txt_Printers_toner_cartridge.setAlignmentY(0.1F);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 7;
         gridBagConstraints.gridy = 6;
         gridBagConstraints.gridwidth = 4;
         gridBagConstraints.ipadx = 302;
         gridBagConstraints.insets = new java.awt.Insets(17, 0, 0, 0);
-        jPanel4.add(jTextField17, gridBagConstraints);
+        jPanel4.add(txt_Printers_toner_cartridge, gridBagConstraints);
 
-        jTextField18.setText("jTextField1");
-        jTextField18.setAlignmentX(0.1F);
-        jTextField18.setAlignmentY(0.1F);
+        txt_Printers_notice.setAlignmentX(0.1F);
+        txt_Printers_notice.setAlignmentY(0.1F);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 7;
         gridBagConstraints.gridy = 13;
@@ -410,11 +528,10 @@ public class AppWindow extends javax.swing.JFrame {
         gridBagConstraints.ipadx = 302;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 0, 0);
-        jPanel4.add(jTextField18, gridBagConstraints);
+        jPanel4.add(txt_Printers_notice, gridBagConstraints);
 
-        jTextField19.setText("jTextField1");
-        jTextField19.setAlignmentX(0.1F);
-        jTextField19.setAlignmentY(0.1F);
+        txt_Printers_waste_toner.setAlignmentX(0.1F);
+        txt_Printers_waste_toner.setAlignmentY(0.1F);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 7;
         gridBagConstraints.gridy = 11;
@@ -422,24 +539,24 @@ public class AppWindow extends javax.swing.JFrame {
         gridBagConstraints.ipadx = 302;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        jPanel4.add(jTextField19, gridBagConstraints);
+        jPanel4.add(txt_Printers_waste_toner, gridBagConstraints);
 
-        jDateChooser1.setAlignmentX(0.1F);
-        jDateChooser1.setAlignmentY(0.1F);
+        txt_Printers_date.setAlignmentX(0.1F);
+        txt_Printers_date.setAlignmentY(0.1F);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 13;
         gridBagConstraints.ipadx = 109;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(2, 4, 0, 0);
-        jPanel4.add(jDateChooser1, gridBagConstraints);
+        jPanel4.add(txt_Printers_date, gridBagConstraints);
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pict/icons/check.png"))); // NOI18N
-        jButton1.setText("Вставить");
-        jButton1.setAlignmentY(0.1F);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btn_Printers_insert.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pict/icons/check.png"))); // NOI18N
+        btn_Printers_insert.setText("Вставить");
+        btn_Printers_insert.setAlignmentY(0.1F);
+        btn_Printers_insert.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btn_Printers_insertActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -447,75 +564,75 @@ public class AppWindow extends javax.swing.JFrame {
         gridBagConstraints.gridy = 7;
         gridBagConstraints.ipadx = 6;
         gridBagConstraints.insets = new java.awt.Insets(0, 14, 0, 13);
-        jPanel4.add(jButton1, gridBagConstraints);
+        jPanel4.add(btn_Printers_insert, gridBagConstraints);
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pict/icons/refresh_22.png"))); // NOI18N
-        jButton2.setText("Обновить");
-        jButton2.setAlignmentY(0.1F);
-        jButton2.setName(""); // NOI18N
-        jButton2.setPreferredSize(new java.awt.Dimension(109, 29));
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btn_Printers_refresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pict/icons/refresh_22.png"))); // NOI18N
+        btn_Printers_refresh.setText("Обновить");
+        btn_Printers_refresh.setAlignmentY(0.1F);
+        btn_Printers_refresh.setName(""); // NOI18N
+        btn_Printers_refresh.setPreferredSize(new java.awt.Dimension(109, 29));
+        btn_Printers_refresh.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btn_Printers_refreshActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 11;
         gridBagConstraints.gridy = 9;
         gridBagConstraints.insets = new java.awt.Insets(0, 2, 0, 0);
-        jPanel4.add(jButton2, gridBagConstraints);
+        jPanel4.add(btn_Printers_refresh, gridBagConstraints);
 
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pict/icons/delete_18.png"))); // NOI18N
-        jButton3.setText("Удалить");
-        jButton3.setAlignmentY(0.1F);
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btn_Printers_delete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pict/icons/delete_18.png"))); // NOI18N
+        btn_Printers_delete.setText("Удалить");
+        btn_Printers_delete.setAlignmentY(0.1F);
+        btn_Printers_delete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btn_Printers_deleteActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 11;
         gridBagConstraints.gridy = 14;
         gridBagConstraints.ipadx = 10;
-        jPanel4.add(jButton3, gridBagConstraints);
+        jPanel4.add(btn_Printers_delete, gridBagConstraints);
 
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pict/icons/next_20.png"))); // NOI18N
-        jButton4.setText("Следующий");
-        jButton4.setAlignmentY(0.1F);
+        btn_Printers_next.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pict/icons/next_20.png"))); // NOI18N
+        btn_Printers_next.setText("Следующий");
+        btn_Printers_next.setAlignmentY(0.1F);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 12;
         gridBagConstraints.gridy = 9;
         gridBagConstraints.ipadx = 6;
-        jPanel4.add(jButton4, gridBagConstraints);
+        jPanel4.add(btn_Printers_next, gridBagConstraints);
 
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pict/icons/first_20.png"))); // NOI18N
-        jButton5.setText("Вначало");
-        jButton5.setAlignmentY(0.1F);
+        btn_Printers_first.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pict/icons/first_20.png"))); // NOI18N
+        btn_Printers_first.setText("Вначало");
+        btn_Printers_first.setAlignmentY(0.1F);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 12;
         gridBagConstraints.gridy = 7;
         gridBagConstraints.ipadx = 25;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(3, 7, 3, 7);
-        jPanel4.add(jButton5, gridBagConstraints);
+        jPanel4.add(btn_Printers_first, gridBagConstraints);
 
-        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pict/icons/back_20.png"))); // NOI18N
-        jButton6.setText("Предыдущий");
-        jButton6.setAlignmentY(0.1F);
+        btn_Printers_back.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pict/icons/back_20.png"))); // NOI18N
+        btn_Printers_back.setText("Предыдущий");
+        btn_Printers_back.setAlignmentY(0.1F);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 12;
         gridBagConstraints.gridy = 11;
-        jPanel4.add(jButton6, gridBagConstraints);
+        jPanel4.add(btn_Printers_back, gridBagConstraints);
 
-        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pict/icons/last_20.png"))); // NOI18N
-        jButton7.setText("Вконец");
-        jButton7.setAlignmentY(0.1F);
+        btn_Printers_last.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pict/icons/last_20.png"))); // NOI18N
+        btn_Printers_last.setText("Вконец");
+        btn_Printers_last.setAlignmentY(0.1F);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 12;
         gridBagConstraints.gridy = 13;
         gridBagConstraints.ipadx = 32;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 0, 0);
-        jPanel4.add(jButton7, gridBagConstraints);
+        jPanel4.add(btn_Printers_last, gridBagConstraints);
 
         jTabbedPane1.addTab("MFP", jPanel4);
 
@@ -904,21 +1021,26 @@ public class AppWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField20ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btn_Printers_insertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_Printers_insertActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+        
+    }//GEN-LAST:event_btn_Printers_insertActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btn_Printers_refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_Printers_refreshActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btn_Printers_refreshActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btn_Printers_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_Printers_deleteActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btn_Printers_deleteActionPerformed
 
-    private void jTextField14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField14ActionPerformed
+    private void txt_Printers_conditionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_Printers_conditionActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField14ActionPerformed
+    }//GEN-LAST:event_txt_Printers_conditionActionPerformed
+
+    private void txt_Printers_device_nameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_Printers_device_nameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_Printers_device_nameActionPerformed
 
     /**
      * @param args the command line arguments
@@ -962,17 +1084,16 @@ public class AppWindow extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_Printers_back;
+    private javax.swing.JButton btn_Printers_delete;
+    private javax.swing.JButton btn_Printers_first;
+    private javax.swing.JButton btn_Printers_insert;
+    private javax.swing.JButton btn_Printers_last;
+    private javax.swing.JButton btn_Printers_next;
+    private javax.swing.JButton btn_Printers_refresh;
     private java.awt.Button button1;
     private java.awt.Button button2;
     private java.awt.Canvas canvas1;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
     private com.toedter.calendar.JDateChooser jDateChooser2;
     private com.toedter.calendar.JDateChooser jDateChooser3;
     private javax.swing.JLabel jLabel1;
@@ -1022,15 +1143,6 @@ public class AppWindow extends javax.swing.JFrame {
     private javax.swing.JTable jTable_mfprinters;
     private javax.swing.JTable jTable_mfprinters_log;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField10;
-    private javax.swing.JTextField jTextField11;
-    private javax.swing.JTextField jTextField12;
-    private javax.swing.JTextField jTextField14;
-    private javax.swing.JTextField jTextField15;
-    private javax.swing.JTextField jTextField16;
-    private javax.swing.JTextField jTextField17;
-    private javax.swing.JTextField jTextField18;
-    private javax.swing.JTextField jTextField19;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField20;
     private javax.swing.JTextField jTextField21;
@@ -1045,7 +1157,17 @@ public class AppWindow extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField jTextField7;
     private javax.swing.JTextField jTextField8;
-    private javax.swing.JTextField jTextField9;
     private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JTextField txt_Printers_condition;
+    private com.toedter.calendar.JDateChooser txt_Printers_date;
+    private javax.swing.JTextField txt_Printers_dealer;
+    private javax.swing.JTextField txt_Printers_device_id;
+    private javax.swing.JTextField txt_Printers_device_name;
+    private javax.swing.JTextField txt_Printers_drum_cartridge;
+    private javax.swing.JTextField txt_Printers_location;
+    private javax.swing.JTextField txt_Printers_notice;
+    private javax.swing.JTextField txt_Printers_roller;
+    private javax.swing.JTextField txt_Printers_toner_cartridge;
+    private javax.swing.JTextField txt_Printers_waste_toner;
     // End of variables declaration//GEN-END:variables
 }
