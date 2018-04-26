@@ -1,14 +1,22 @@
 package erpv2;
 
 import calendar.CalendarTest;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class AppWindow extends javax.swing.JFrame {
@@ -19,7 +27,10 @@ public class AppWindow extends javax.swing.JFrame {
     public AppWindow() {
         initComponents();
         
-        Show_Products_In_JTable();
+        //Show_Products_In_JTable();
+        Show_Data_In_JTable_mfprinters();
+        //Show_Data_In_JTable_mf_spare_parts();        
+        //Show_Data_In_JTable_mfprinters_log();
     }
     
     /*
@@ -32,54 +43,40 @@ public class AppWindow extends javax.swing.JFrame {
         Connection con = null;
         try {
             // 172.24.225.222/erpdb","erpuser", "linAdmin79!!!
-            con = DriverManager.getConnection("jdbc:mysql://172.24.225.222/erpdb","erpuser","linAdmin79!!!");
-            //con = DriverManager.getConnection("jdbc:mysql://192.168.0.171/erpdb","erpdbusr", "U><er!!!123");
-            /*Убрал всплывающее окно Connected
+            //con = DriverManager.getConnection("jdbc:mysql://172.24.225.222/erpdb","erpuser","linAdmin79!!!");
+            con = DriverManager.getConnection("jdbc:mysql://192.168.0.171/erpdb","erpdbusr", "U><er!!!123");
+            /*Убрал всплывающее окно Connected          
             JOptionPane.showMessageDialog(null,"Connected");
             */
+            
             return con;
         } catch (SQLException ex) {
             Logger.getLogger(AppWindow.class.getName()).log(Level.SEVERE, null, ex);
-            /*Убрал всплывающее окно Not Connected
+            /*Убрал всплывающее окно Not Connected            
             JOptionPane.showMessageDialog(null,"Not Connected");
-            */
+            */            
             return null;
         }
     }
     
-    // Check Input Fields
+    // Check Input Fields Printers
     public boolean checkInputsPrinters() {
-        if(txt_Printers_device_name.getText() == null
+        if (txt_Printers_device_name.getText() == null
                 || txt_Printers_dealer.getText() == null
                 || txt_Printers_location.getText() == null
-                || txt_Printers_date.getDate() == null
-                || txt_Printers_condition.getText() == null
-                || txt_Printers_toner_cartridge.getText() == null
-                || txt_Printers_drum_cartridge.getText() == null
-                || txt_Printers_roller.getText() == null
-                || txt_Printers_waste_toner.getText() == null
-                || txt_Printers_notice.getText() == null
-                ){
-            return false;
-        }
-        else{
-            try{
-                Float.parseFloat(txt_price.getText());
-                return true;
-            }catch(Exception ex)
-            {
-                return false;
-            }
-        }
+                || txt_Printers_date.getDate() == null) {
+            System.out.println("Пожалуйста заполните все поля");
+            return false;}
+        else{return true;}
     }
     
     
     // Отображение данных из базы в таблице MFP JTable App_mfprinters
-    // 1 - Fill ArrayList With The Data
+    // 1 - Заполнить ArrayList данными
     
-    public ArrayList<App_mfprinters> getProductList()
+    public ArrayList<App_mfprinters> getPrintersList()
     {
-        ArrayList<App_mfprinters> productList = new ArrayList<App_mfprinters>();
+        ArrayList<App_mfprinters> dataPrintersList = new ArrayList<App_mfprinters>();
         Connection con = getConnection();
         String query = "SELECT * FROM mfprinters";
             
@@ -89,26 +86,30 @@ public class AppWindow extends javax.swing.JFrame {
         try {           
             st = con.createStatement();
             rs = st.executeQuery(query);
-            App_mfprinters product;
+            App_mfprinters printers;
             
             while(rs.next())
             {
-                product = new App_mfprinters(rs.getInt("id"),rs.getString("name"),Float.parseFloat(rs.getString("price")),rs.getString("add_date"),rs.getBytes("image"));
-                productList.add(product);
+                printers = new App_mfprinters(rs.getInt("device_id"),rs.getString("device_name"),                        
+                        rs.getString("dealer"),rs.getString("location"),rs.getString("date"),
+                        rs.getString("state"),rs.getString("toner_cartridge"),rs.getString("drum_cartridge"),
+                        rs.getString("roller"),rs.getString("waste_toner_container"),rs.getString("notice"));
+                dataPrintersList.add(printers);
             }
             
         } catch (SQLException ex) {
             Logger.getLogger(AppWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        return productList;
+        return dataPrintersList;
     }
     
     // 2 - Populate The JTable
+    // Show_Data_In_JTable_mfprinters();
     
-    public void Show_Products_In_JTable_mfprinters()
+    public void Show_Data_In_JTable_mfprinters()
     {
-        ArrayList<App_mfprinters> list = getProductList();
+        ArrayList<App_mfprinters> list = getPrintersList();
         DefaultTableModel model = (DefaultTableModel)jTable_mfprinters.getModel();
         
         // очистка содержимого таблицы
@@ -121,7 +122,7 @@ public class AppWindow extends javax.swing.JFrame {
             row[2] = list.get(i).getPrintersDealer();
             row[3] = list.get(i).getPrintersLocation();
             row[4] = list.get(i).getPrintersDate();
-            row[5] = list.get(i).getPrintersCondition();
+            row[5] = list.get(i).getPrintersState();
             row[6] = list.get(i).getPrintersCartridge();
             row[7] = list.get(i).getPrintersDrum();
             row[8] = list.get(i).getPrintersRoller();
@@ -129,9 +130,154 @@ public class AppWindow extends javax.swing.JFrame {
             row[10] = list.get(i).getPrintersNotice();           
             
             model.addRow(row);
+        }        
+    }
+    
+    //Показать данные в полях для ввода текста
+    public void ShowItem(int index)
+    {
+            txt_Printers_device_id.setText(Integer.toString(getPrintersList().get(index).getPrintersDevice_id()));
+            txt_Printers_device_name.setText(getPrintersList().get(index).getPrintersDevice_name());
+            txt_Printers_dealer.setText(getPrintersList().get(index).getPrintersDealer());
+            txt_Printers_location.setText(getPrintersList().get(index).getPrintersLocation());            
+            txt_Printers_state.setText(getPrintersList().get(index).getPrintersState());
+            txt_Printers_toner_cartridge.setText(getPrintersList().get(index).getPrintersCartridge());
+            txt_Printers_drum_cartridge.setText(getPrintersList().get(index).getPrintersDrum());
+            txt_Printers_roller.setText(getPrintersList().get(index).getPrintersRoller());
+            txt_Printers_waste_toner.setText(getPrintersList().get(index).getPrintersWasteToner());
+            txt_Printers_notice.setText(getPrintersList().get(index).getPrintersNotice());
+        try {            
+            Date addDate = null;
+            addDate = new SimpleDateFormat("yyyy-MM-dd").parse((String)getPrintersList().get(index).getPrintersDate());
+            txt_Printers_date.setDate(addDate);
+        } catch (ParseException ex) {
+            Logger.getLogger(AppWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        /*здесь я сделал ошибку, было:
+        lbl_image.setIcon(ResizeImage(null), getProductList().get(index).getImage()));
+      
+        lbl_image.setIcon(ResizeImage(null, getProductList().get(index).getImage()));
+        */
+        
+    }
+    
+    // Отображение данных из базы в таблице MFP JTable App_mf_spare_parts
+    // 1 - Заполнить ArrayList данными
+    
+    public ArrayList<App_mf_spare_parts> getPartsList()
+    {
+        ArrayList<App_mf_spare_parts> dataPartsList = new ArrayList<App_mf_spare_parts>();
+        Connection con = getConnection();
+        String query = "SELECT * FROM mf_spare_parts";
+            
+        Statement st;
+        ResultSet rs;
+            
+        try {           
+            st = con.createStatement();
+            rs = st.executeQuery(query);
+            App_mf_spare_parts parts;
+            
+            while(rs.next())
+            {
+                parts = new App_mf_spare_parts(rs.getInt("device_id"),rs.getString("device_name"),                        
+                        rs.getString("dealer"),rs.getString("location"),rs.getString("date"),
+                        rs.getString("state"),rs.getString("type"),rs.getString("notice"));                        
+                dataPartsList.add(parts);
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(AppWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return dataPartsList;
+    }
+    
+    // 2 - Populate The JTable
+    //Show_Data_In_JTable_mf_spare_parts();    
+    public void Show_Data_In_JTable_mf_spare_parts() {
+        ArrayList<App_mf_spare_parts> list = getPartsList();
+        DefaultTableModel model = (DefaultTableModel)jTable_mf_spare_parts.getModel();
+        
+        // очистка содержимого таблицы
+        model.setRowCount(0);
+        Object[] row = new Object[8];
+        for(int i = 0; i < list.size(); i++)
+        {
+            row[0] = list.get(i).getPartDevice_id();
+            row[1] = list.get(i).getPartDevice_name();
+            row[2] = list.get(i).getPartDealer();
+            row[3] = list.get(i).getPartLocation();
+            row[4] = list.get(i).getPartDate();
+            row[5] = list.get(i).getPartState();
+            row[6] = list.get(i).getPartType();
+            row[7] = list.get(i).getPartNotice();                      
+            
+            model.addRow(row);
         }
         
     }
+    // Отображение данных из базы в таблице MFP JTable App_mfprinters_log
+    // 1 - Заполнить ArrayList данными
+    
+    public ArrayList<App_mfprinters_log> getPrintersLogList()
+    {
+        ArrayList<App_mfprinters_log> dataPrintersLogList = new ArrayList<App_mfprinters_log>();
+        Connection con = getConnection();
+        String query = "SELECT * FROM mfprinters_log";
+            
+        Statement st;
+        ResultSet rs;
+            
+        try {           
+            st = con.createStatement();
+            rs = st.executeQuery(query);
+            App_mfprinters_log printersLogList;
+            
+            while(rs.next())
+            {
+                printersLogList = new App_mfprinters_log(rs.getInt("action_id"),rs.getString("action"),                        
+                        rs.getString("dealer"),rs.getString("date"),rs.getString("toner_cartridge"),rs.getString("drum_cartridge"),
+                        rs.getString("roller"),rs.getString("waste_toner_container"),rs.getInt("count"),
+                        rs.getString("notice"));
+                dataPrintersLogList.add(printersLogList);
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(AppWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return dataPrintersLogList;
+    }
+    // 2 - Populate The JTable
+    //Show_Data_In_JTable_mfprinters_log();    
+    public void Show_Data_In_JTable_mfprinters_log() {
+        ArrayList<App_mfprinters_log> list = getPrintersLogList();
+        DefaultTableModel model = (DefaultTableModel)jTable_mfprinters_log.getModel();
+        
+        // очистка содержимого таблицы
+        model.setRowCount(0);
+        Object[] row = new Object[11];
+        for(int i = 0; i < list.size(); i++)
+        {
+            row[0] = list.get(i).getLogActionId();
+            row[1] = list.get(i).getLogAction();
+            row[2] = list.get(i).getLogDealer();
+            row[3] = list.get(i).getLogDate();
+            row[4] = list.get(i).getLogToner();
+            row[5] = list.get(i).getLogDrum();
+            row[6] = list.get(i).getLogRoller();
+            row[7] = list.get(i).getLogWaste_toner();
+            row[8] = list.get(i).getLogCount();
+            row[9] = list.get(i).getLogNotice();                       
+            
+            model.addRow(row);
+        }
+        
+    }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -168,7 +314,7 @@ public class AppWindow extends javax.swing.JFrame {
         txt_Printers_device_name = new javax.swing.JTextField();
         txt_Printers_dealer = new javax.swing.JTextField();
         txt_Printers_location = new javax.swing.JTextField();
-        txt_Printers_condition = new javax.swing.JTextField();
+        txt_Printers_state = new javax.swing.JTextField();
         txt_Printers_drum_cartridge = new javax.swing.JTextField();
         txt_Printers_roller = new javax.swing.JTextField();
         txt_Printers_toner_cartridge = new javax.swing.JTextField();
@@ -283,7 +429,7 @@ public class AppWindow extends javax.swing.JFrame {
 
             },
             new String [] {
-                "device_id", "device_name", "dealer", "location", "date", "condition", "toner_cartridge", "drum_cartridge", "roller", "waste_toner_container", "notice"
+                "device_id", "device_name", "dealer", "location", "date", "состояние", "toner_cartridge", "drum_cartridge", "roller", "waste_toner_container", "notice"
             }
         ));
         jTable_mfprinters.setAlignmentX(0.1F);
@@ -349,7 +495,7 @@ public class AppWindow extends javax.swing.JFrame {
         jPanel4.add(jLabel4, gridBagConstraints);
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jLabel5.setText("Кондиция:");
+        jLabel5.setText("Сост.:");
         jLabel5.setAlignmentY(0.1F);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -425,6 +571,11 @@ public class AppWindow extends javax.swing.JFrame {
 
         txt_Printers_device_id.setAlignmentX(0.1F);
         txt_Printers_device_id.setAlignmentY(0.1F);
+        txt_Printers_device_id.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_Printers_device_idActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 6;
@@ -451,6 +602,11 @@ public class AppWindow extends javax.swing.JFrame {
 
         txt_Printers_dealer.setAlignmentX(0.1F);
         txt_Printers_dealer.setAlignmentY(0.1F);
+        txt_Printers_dealer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_Printers_dealerActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 9;
@@ -471,11 +627,11 @@ public class AppWindow extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(6, 4, 0, 0);
         jPanel4.add(txt_Printers_location, gridBagConstraints);
 
-        txt_Printers_condition.setAlignmentX(0.1F);
-        txt_Printers_condition.setAlignmentY(0.1F);
-        txt_Printers_condition.addActionListener(new java.awt.event.ActionListener() {
+        txt_Printers_state.setAlignmentX(0.1F);
+        txt_Printers_state.setAlignmentY(0.1F);
+        txt_Printers_state.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txt_Printers_conditionActionPerformed(evt);
+                txt_Printers_stateActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -485,7 +641,7 @@ public class AppWindow extends javax.swing.JFrame {
         gridBagConstraints.ipadx = 302;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.ABOVE_BASELINE_LEADING;
         gridBagConstraints.insets = new java.awt.Insets(6, 4, 0, 0);
-        jPanel4.add(txt_Printers_condition, gridBagConstraints);
+        jPanel4.add(txt_Printers_state, gridBagConstraints);
 
         txt_Printers_drum_cartridge.setAlignmentX(0.1F);
         txt_Printers_drum_cartridge.setAlignmentY(0.1F);
@@ -1022,7 +1178,61 @@ public class AppWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField20ActionPerformed
 
     private void btn_Printers_insertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_Printers_insertActionPerformed
-        // TODO add your handling code here:
+        // обработчик кнопки Вставить
+        if(checkInputsPrinters() && txt_Printers_device_id.getText() != null)
+        {
+            try {
+                Connection con = getConnection();
+                PreparedStatement ps = con.prepareStatement("INSERT INTO mfprinters(device_name, dealer, location, date, state, toner_cartridge, drum_cartridge, roller, waste_toner_container, notice)"
+                + "values(?,?,?,?,?,?,?,?,?,?) ");
+                ps.setString(1, txt_Printers_device_name.getText());
+                ps.setString(2, txt_Printers_dealer.getText());
+                ps.setString(3, txt_Printers_location.getText());
+                
+                 // преобразуем формат даты из формы               
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                String addDate = dateFormat.format(txt_Printers_date.getDate());
+                ps.setString(4, addDate);
+                
+                ps.setString(5, txt_Printers_state.getText());
+                ps.setString(6, txt_Printers_toner_cartridge.getText());
+                ps.setString(7, txt_Printers_drum_cartridge.getText());
+                ps.setString(8, txt_Printers_roller.getText());
+                ps.setString(9, txt_Printers_waste_toner.getText());
+                ps.setString(10, txt_Printers_notice.getText());
+                
+                /*
+                InputStream img = new FileInputStream(new File(ImgPath));
+                ps.setBlob(4, img);
+                ps.executeUpdate();
+                */
+                System.out.println("Connection => "+con);
+                System.out.println("Prepared statements => "+ps);
+        
+                Show_Data_In_JTable_mfprinters();                
+                
+                JOptionPane.showMessageDialog(null, "Данные добавлены");
+                //System.out.println(device_id + device_name + dealer + location + date + condition + toner_cartridge + drum_cartridge + roller + waste_toner_container + notice);
+                
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "Некоторые поля пустые");
+        }
+        
+        System.out.println("Название => "+txt_Printers_device_name.getText());
+        System.out.println("Поставщик => "+txt_Printers_dealer.getText());
+        System.out.println("Локация => "+txt_Printers_location.getText());
+        System.out.println("Дата => "+txt_Printers_date.getDate());
+        System.out.println("Состояние => "+txt_Printers_state.getText());
+        System.out.println("Тонер => "+txt_Printers_toner_cartridge.getText());
+        System.out.println("Барабан => "+txt_Printers_drum_cartridge.getText());
+        System.out.println("Ролик => "+txt_Printers_roller.getText());
+        System.out.println("Бункер => "+txt_Printers_roller.getText());
+        System.out.println("Комментарий => "+txt_Printers_notice.getText());
+        
+        System.out.println("checkInputsPrinters => "+checkInputsPrinters());
         
     }//GEN-LAST:event_btn_Printers_insertActionPerformed
 
@@ -1034,13 +1244,21 @@ public class AppWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_Printers_deleteActionPerformed
 
-    private void txt_Printers_conditionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_Printers_conditionActionPerformed
+    private void txt_Printers_stateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_Printers_stateActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txt_Printers_conditionActionPerformed
+    }//GEN-LAST:event_txt_Printers_stateActionPerformed
 
     private void txt_Printers_device_nameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_Printers_device_nameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_Printers_device_nameActionPerformed
+
+    private void txt_Printers_device_idActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_Printers_device_idActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_Printers_device_idActionPerformed
+
+    private void txt_Printers_dealerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_Printers_dealerActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_Printers_dealerActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1158,7 +1376,6 @@ public class AppWindow extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField7;
     private javax.swing.JTextField jTextField8;
     private javax.swing.JToolBar jToolBar1;
-    private javax.swing.JTextField txt_Printers_condition;
     private com.toedter.calendar.JDateChooser txt_Printers_date;
     private javax.swing.JTextField txt_Printers_dealer;
     private javax.swing.JTextField txt_Printers_device_id;
@@ -1167,6 +1384,7 @@ public class AppWindow extends javax.swing.JFrame {
     private javax.swing.JTextField txt_Printers_location;
     private javax.swing.JTextField txt_Printers_notice;
     private javax.swing.JTextField txt_Printers_roller;
+    private javax.swing.JTextField txt_Printers_state;
     private javax.swing.JTextField txt_Printers_toner_cartridge;
     private javax.swing.JTextField txt_Printers_waste_toner;
     // End of variables declaration//GEN-END:variables

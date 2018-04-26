@@ -8,7 +8,7 @@ public class App_mfprinters {
     private String dealer;
     private String location;
     private String date;
-    private String condition;
+    private String state;
     private String toner_cartridge;
     private String drum_cartridge;
     private String roller;
@@ -16,7 +16,7 @@ public class App_mfprinters {
     private String notice;
     
     public App_mfprinters(int printersDeviceId, String printersDeviceName, String printersDealer,
-            String printersLocation, String printersDate, String printersCondition,
+            String printersLocation, String printersDate, String printersState,
             String printersCartridge, String printersDrum, String printersRoller,
             String printersWaste_toner, String printersNotice) {
         this.device_id = printersDeviceId;
@@ -24,7 +24,7 @@ public class App_mfprinters {
         this.dealer = printersDealer;
         this.location = printersLocation;
         this.date = printersDate;
-        this.condition = printersCondition;
+        this.state = printersState;
         this.toner_cartridge = printersCartridge;
         this.drum_cartridge = printersDrum;
         this.roller = printersRoller;
@@ -47,8 +47,8 @@ public class App_mfprinters {
     public String getPrintersDate() {
         return date;
     }    
-    public String getPrintersCondition() {
-        return condition;
+    public String getPrintersState() {
+        return state;
     }    
     public String getPrintersCartridge() {
         return toner_cartridge;
