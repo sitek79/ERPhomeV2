@@ -14,8 +14,8 @@ CREATE TABLE `erpdb`.`mfprinters` (
   `device_name` VARCHAR(45) NOT NULL,
   `dealer` VARCHAR(45) NOT NULL,
   `location` VARCHAR(45) NOT NULL,
-  `date` DATE NOT NULL,
-  `condition` VARCHAR(20) NOT NULL,
+  `date` VARCHAR(20) NOT NULL,
+  `state` VARCHAR(20) NOT NULL,
   `toner_cartridge` VARCHAR(45) NOT NULL,
   `drum_cartridge` VARCHAR(45) NOT NULL,
   `roller` VARCHAR(45) NOT NULL,
@@ -62,6 +62,9 @@ CREATE TABLE `erpdb`.`products` (
   `image` LONGBLOB NULL,
   PRIMARY KEY (`id`))
 COMMENT = 'products';
+
+
+
 Изменения в таблице
 Переименовать condition в state
 ALTER TABLE `erpdb`.`mfprinters` 

@@ -43,8 +43,8 @@ public class AppWindow extends javax.swing.JFrame {
         Connection con = null;
         try {
             // 172.24.225.222/erpdb","erpuser", "linAdmin79!!!
-            //con = DriverManager.getConnection("jdbc:mysql://172.24.225.222/erpdb","erpuser","linAdmin79!!!");
-            con = DriverManager.getConnection("jdbc:mysql://192.168.0.171/erpdb","erpdbusr", "U><er!!!123");
+            con = DriverManager.getConnection("jdbc:mysql://172.24.225.222/erpdb","erpuser","linAdmin79!!!");
+            //con = DriverManager.getConnection("jdbc:mysql://192.168.0.171/erpdb","erpdbusr", "U><er!!!123");
             /*Убрал всплывающее окно Connected          
             JOptionPane.showMessageDialog(null,"Connected");
             */
@@ -1114,7 +1114,9 @@ public class AppWindow extends javax.swing.JFrame {
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(canvas1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(canvas1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -1183,8 +1185,10 @@ public class AppWindow extends javax.swing.JFrame {
         {
             try {
                 Connection con = getConnection();
+                //PreparedStatement ps = con.prepareStatement("INSERT INTO mfprinters(device_name, dealer, location, date, state, toner_cartridge, drum_cartridge, roller, waste_toner_container, notice)"
+                //+ "values(?,?,?,?,?,?,?,?,?,?) ");
                 PreparedStatement ps = con.prepareStatement("INSERT INTO mfprinters(device_name, dealer, location, date, state, toner_cartridge, drum_cartridge, roller, waste_toner_container, notice)"
-                + "values(?,?,?,?,?,?,?,?,?,?) ");
+                        + "VALUES('Kyocera','Onlinetrade','Koridor','26.04.2018','turn off','108R457345','108D457345',"108ROL457345","108BUN457345","In my otpusk period")");
                 ps.setString(1, txt_Printers_device_name.getText());
                 ps.setString(2, txt_Printers_dealer.getText());
                 ps.setString(3, txt_Printers_location.getText());
